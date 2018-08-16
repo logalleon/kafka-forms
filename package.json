@@ -18,5 +18,6 @@
   },
   "homepage": "https://github.com/logalleon/kafka-forms#readme",
   "dependencies": {
+    "jquery": "^3.3.1"
   }
 }

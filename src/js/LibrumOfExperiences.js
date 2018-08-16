@@ -1,4 +1,41 @@
-const LibrumOfExperiences = {
+const questionTypes = [
+  'surreal',
+  'personal',
+  'dark',
+  'polticial',
+  'judicial',
+  'religious',
+];
 
+const questions = {
+  surrealQuestions: [
+    'What'
+  ],
+  personalQuestions: [
+    'Win'
+  ],
+  darkQuestions: [
+    'Why'
+  ],
+  polticialQuestions: [
+    'Who now'
+  ],
+  judicialQuestions: [
+    'Das [animals]'
+  ],
+  religiousQuestions: [
+    'Okay'
+  ],
 }
-module.exports = LibrumOfExperiences;
+
+const animals = [
+  'horse',
+  'goat'
+]
+
+const LibrumOfExperiences = {
+  questionTypes,
+  questions,
+  animals
+}
+module.exports = { questionTypes, LibrumOfExperiences }
