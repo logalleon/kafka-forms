@@ -10368,14 +10368,42 @@ return jQuery;
 const { Ossuary } = require('./ossuary');
 const $ = require('jquery');
 const { LibrumOfExperiences } = require('./LibrumOfExperiences');
+const { randomIntR } = require('./Random');
 
 class Kafka {
 
   constructor () {
     this.ossuary = new Ossuary(LibrumOfExperiences);
+    let numberPerRow = randomIntR({ low: 1, high: 4 });
+    let currentRowItem = 0;
+    let $row = $('<div class="row"></div>');
     for (let i = 0; i < 10; i++) {
       const $el = this.getInputElement();
-      $('body').append($el);
+      const ratio = this.getRatio(numberPerRow);
+      console.log(ratio);
+      $el.addClass(ratio);
+      $row.append($el);
+      currentRowItem++;
+      console.log(currentRowItem, numberPerRow);
+      if (currentRowItem === numberPerRow || (i === (10 - 1))) {
+        $('body').append($row);
+        numberPerRow = Number(this.ossuary.parse('{1|2|4}'));
+        currentRowItem = 0;
+        $row = $('<div class="row"></div>');
+      }
+    }
+  }
+
+  getRatio (number) {
+    switch (number) {
+      case 1:
+        return 'twelve';
+      case 2:
+        return 'six';
+      case 3:
+        return 'four';
+      case 4:
+        return 'three';
     }
   }
 
@@ -10385,13 +10413,13 @@ class Kafka {
     const question = this.recursiveslyParse(this.ossuary.parse(`[questions.${questionType}]`));
     switch (type) {
       case 'input-text':
-        return this.buildInputText(question);
+        return this.buildInputText(question, type);
       case 'input-number':
-        return this.buildInputNumber(question);
+        return this.buildInputNumber(question, type);
       case 'select':
-        return this.buildInputSelect(question);
+        return this.buildInputSelect(question, type);
       case 'radio':
-        return this.buildInputRadio(question);
+        return this.buildInputRadio(question, type);
     }
   }
 
@@ -10399,32 +10427,37 @@ class Kafka {
     return this.ossuary.parse('{input-text^2|input-number^.6|select|radio}');
   }
 
-  buildInputText (question) {
-    let $el = $('<div><input required type="text"/></div>');
+  buildInputText (question, type) {
+    let $el = $('<div class="columns"><input required type="text"/></div>');
     $el.prepend(this.getQuestionEl(question));
     return $el;
   }
 
-  buildInputNumber (question) {
-    let $el = $('<div><input required type="number"/></div>');
+  buildInputNumber (question, type) {
+    let $el = $('<div class="columns"><input required type="number"/></div>');
     $el.prepend(this.getQuestionEl(question));
     return $el;
   }
 
-  buildInputSelect (question) {
-    let $el = $('<div><select required></select></div>');
+  buildInputSelect (question, type) {
+    let $el = $('<div class="columns"><select required></select></div>');
     $el.prepend(this.getQuestionEl(question));
+    let max = randomIntR({ low: 2, high: 10 });
+    let answers = this.ossuary.parse(`[answers.${type}Answers:unique(${max})]`);
+    answers = answers.split(' ');
+    answers.forEach((answer) => {
+      $el.find('select').append($(`<option>${answer}</option>`));
+    });
     return $el;
   }
 
   buildInputRadio (question) {
-    let $el = $('<div><input required type="radio"/></div>');
+    let $el = $('<div class="columns"><input required type="radio"/></div>');
     $el.prepend(this.getQuestionEl(question));
     return $el;
   }
 
   recursiveslyParse (str) {
-    console.log(str);
     let parsed = this.ossuary.parse(str);
     if (str === parsed) {
       return parsed;
@@ -10440,7 +10473,7 @@ class Kafka {
 }
 
 module.exports = Kafka;
-},{"./LibrumOfExperiences":3,"./ossuary":6,"jquery":1}],3:[function(require,module,exports){
+},{"./LibrumOfExperiences":3,"./Random":4,"./ossuary":6,"jquery":1}],3:[function(require,module,exports){
 const questionTypes = [
   'surreal',
   'personal',
@@ -10452,23 +10485,51 @@ const questionTypes = [
 
 const questions = {
   surrealQuestions: [
-    'What'
+    'What is the true purpose of [animals]?'
   ],
   personalQuestions: [
-    'Win'
+    'What did you remember before you were born?'
   ],
   darkQuestions: [
-    'Why'
+    'Have you witnessed the death of another human?'
   ],
   polticialQuestions: [
-    'Who now'
+    'How futile is the revolution?'
   ],
   judicialQuestions: [
-    'Das [animals]'
+    'Have you committed illegal acts against [animals]?'
   ],
   religiousQuestions: [
-    'Okay'
+    `Does the {complete absence|obvious implausability|shocking silence}
+    of God make you {feel the looming shadow of oblivion|lull you into false security|uneasy|pain|terror}?`
   ],
+}
+
+const answers = {
+  surrealAnswers: [
+    'Okay',
+    'Sure'
+  ],
+  personalAnswers: [
+    'Something',
+    'Another'
+  ],
+  darkAnswers: [
+    'That',
+    'What'
+  ],
+  polticialAnswers: [
+    'Pl',
+    'ok'
+  ],
+  judicialAnswers: [
+    'AKDF',
+    'dfal'
+  ],
+  religiousAnswers: [
+    'Animals!',
+    'asdflkj'
+  ]
 }
 
 const animals = [
@@ -10479,7 +10540,8 @@ const animals = [
 const LibrumOfExperiences = {
   questionTypes,
   questions,
-  animals
+  animals,
+  answers
 }
 module.exports = { questionTypes, LibrumOfExperiences }
 },{}],4:[function(require,module,exports){

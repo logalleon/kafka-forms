@@ -9,23 +9,51 @@ const questionTypes = [
 
 const questions = {
   surrealQuestions: [
-    'What'
+    'What is the true purpose of [animals]?'
   ],
   personalQuestions: [
-    'Win'
+    'What did you remember before you were born?'
   ],
   darkQuestions: [
-    'Why'
+    'Have you witnessed the death of another human?'
   ],
   polticialQuestions: [
-    'Who now'
+    'How futile is the revolution?'
   ],
   judicialQuestions: [
-    'Das [animals]'
+    'Have you committed illegal acts against [animals]?'
   ],
   religiousQuestions: [
-    'Okay'
+    `Does the {complete absence|obvious implausability|shocking silence}
+    of God make you {feel the looming shadow of oblivion|lull you into false security|uneasy|pain|terror}?`
   ],
+}
+
+const answers = {
+  surrealAnswers: [
+    'Okay',
+    'Sure'
+  ],
+  personalAnswers: [
+    'Something',
+    'Another'
+  ],
+  darkAnswers: [
+    'That',
+    'What'
+  ],
+  polticialAnswers: [
+    'Pl',
+    'ok'
+  ],
+  judicialAnswers: [
+    'AKDF',
+    'dfal'
+  ],
+  religiousAnswers: [
+    'Animals!',
+    'asdflkj'
+  ]
 }
 
 const animals = [
@@ -36,6 +64,7 @@ const animals = [
 const LibrumOfExperiences = {
   questionTypes,
   questions,
-  animals
+  animals,
+  answers
 }
 module.exports = { questionTypes, LibrumOfExperiences }

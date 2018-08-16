@@ -1,1 +1,19 @@
 @import 'reset';
+@import 'skel';
+
+h1,
+h2,
+h3,
+h4,
+h5,
+p,
+input,
+select,
+option,
+label {
+  font-family: 'Cutive Mono';
+}
+
+label {
+  font-size: 1.5rem;
+}
