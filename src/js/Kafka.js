@@ -1,7 +1,8 @@
 const { Ossuary } = require('./ossuary');
 const $ = require('jquery');
 const { LibrumOfExperiences } = require('./LibrumOfExperiences');
-const { randomIntR } = require('./Random');
+const { randomIntR, randomInt } = require('./Random');
+const { startCase, lowerCase, camelCase } = require('lodash');
 
 class Kafka {
 
@@ -9,22 +10,23 @@ class Kafka {
     this.ossuary = new Ossuary(LibrumOfExperiences);
     let numberPerRow = randomIntR({ low: 1, high: 4 });
     let currentRowItem = 0;
+    let $form = $(`<form id="${this.generateFormId()}" action="${this.generateFormAction()}"></form>`);
     let $row = $('<div class="row"></div>');
     for (let i = 0; i < 10; i++) {
       const $el = this.getInputElement();
       const ratio = this.getRatio(numberPerRow);
-      console.log(ratio);
       $el.addClass(ratio);
       $row.append($el);
       currentRowItem++;
-      console.log(currentRowItem, numberPerRow);
       if (currentRowItem === numberPerRow || (i === (10 - 1))) {
-        $('body').append($row);
+        $form.append($row);
         numberPerRow = Number(this.ossuary.parse('{1|2|4}'));
         currentRowItem = 0;
         $row = $('<div class="row"></div>');
       }
     }
+    $form.append(this.generateSubmit());
+    $('body').append($form);
   }
 
   getRatio (number) {
@@ -43,16 +45,15 @@ class Kafka {
   getInputElement (options) {
     const type = this.getInputType();
     const questionType = this.ossuary.parse('[questionTypes]');
-    const question = this.recursiveslyParse(this.ossuary.parse(`[questions.${questionType}]`));
     switch (type) {
       case 'input-text':
-        return this.buildInputText(question, type);
+        return this.buildInputText(type);
       case 'input-number':
-        return this.buildInputNumber(question, type);
+        return this.buildInputNumber(type);
       case 'select':
-        return this.buildInputSelect(question, type);
+        return this.buildInputSelect(type);
       case 'radio':
-        return this.buildInputRadio(question, type);
+        return this.buildInputRadio(type);
     }
   }
 
@@ -60,23 +61,30 @@ class Kafka {
     return this.ossuary.parse('{input-text^2|input-number^.6|select|radio}');
   }
 
-  buildInputText (question, type) {
-    let $el = $('<div class="columns"><input required type="text"/></div>');
+  buildInputText (type) {
+    const question = lowerCase(this.recursiveslyParse('[inputQuestions]'));
+    let $el = $(`
+      <div class="columns">
+        <input required type="text" placeholder="${this.ossuary.parse('[placeholders]')}"/>
+      </div>
+    `);
     $el.prepend(this.getQuestionEl(question));
     return $el;
   }
 
-  buildInputNumber (question, type) {
+  buildInputNumber (type) {
+    const question = lowerCase(this.recursiveslyParse('[inputQuestions]'));
     let $el = $('<div class="columns"><input required type="number"/></div>');
     $el.prepend(this.getQuestionEl(question));
     return $el;
   }
 
-  buildInputSelect (question, type) {
+  buildInputSelect (type) {
+    const question = lowerCase(this.recursiveslyParse('[selectOrRadioQuestions]'));
     let $el = $('<div class="columns"><select required></select></div>');
     $el.prepend(this.getQuestionEl(question));
     let max = randomIntR({ low: 2, high: 10 });
-    let answers = this.ossuary.parse(`[answers.${type}Answers:unique(${max})]`);
+    let answers = this.ossuary.parse(`[selectOrRadioAnswers.${type}:unique(${max})]`);
     answers = answers.split(' ');
     answers.forEach((answer) => {
       $el.find('select').append($(`<option>${answer}</option>`));
@@ -84,8 +92,21 @@ class Kafka {
     return $el;
   }
 
-  buildInputRadio (question) {
-    let $el = $('<div class="columns"><input required type="radio"/></div>');
+  buildInputRadio (type) {
+    const question = lowerCase(this.recursiveslyParse('[selectOrRadioQuestions]'));
+    const name = randomInt(0, 100000);
+    let $el = $(`<div class="columns"></div>`);
+    let max = randomIntR({ low: 2, high: 10 });
+    let answers = this.ossuary.parse(`[selectOrRadioAnswers.${type}:unique(${max})]`);
+    answers = answers.split(' ');
+    answers.forEach((answer, i) => {
+      $el.append($(`
+      <div>
+        <input type="radio" id="${name}-${i}" type="radio" name=${name}/>
+        <label for="${name}-${i}">${answer}</label>
+      </div>
+      `));
+    });
     $el.prepend(this.getQuestionEl(question));
     return $el;
   }
@@ -101,6 +122,18 @@ class Kafka {
 
   getQuestionEl (question) {
     return `<label>${question}</label>`;
+  }
+
+  generateFormAction () {
+    return camelCase(this.ossuary.parse(`{lost causes|balefulness|the department of departments}`));
+  }
+
+  generateFormId () {
+    return camelCase(this.ossuary.parse(`{the gate of the law|the penal colony|the process}`));
+  }
+
+  generateSubmit () {
+    return $(`<input type="submit" value="${this.ossuary.parse(`{end|finish|complete|submit}`)}"/>`);
   }
 
 }
