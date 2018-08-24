@@ -639,6 +639,11 @@ there.
 /* Larger than tablet */
 /* Larger than desktop */
 /* Larger than Desktop HD */
+input,
+select {
+  min-width: 180px;
+}
+
 h1,
 h2,
 h3,

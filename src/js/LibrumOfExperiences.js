@@ -28,7 +28,41 @@ const inputQuestions = {
   ]
 };
 
-const selectOrRadioQuestions = {
+const selectOrRadioYesNoQuestions = {
+  surreal: [
+    'Have you ever been witness to the collapse of dreams?',
+    'Does the faltering of the stars remind you of the future?',
+    'Can you recall the horrors of the past in great detail?',
+    'What will remain when there is nothing but static?',
+    'Has the future now become the past?',
+    'Can you transcend it all or shall you be pulled into it?'
+  ],
+  personal: [
+    'Do you think often of the now-vague memory of your [relatives]?',
+    'Can you [recollection] life as a young and carefree youth?'
+  ],
+  dark: [
+    'test'
+  ],
+  polticial: [
+    'test'
+  ],
+  judicial: [
+    'test'
+  ],
+  religious: [
+    'test'
+  ]
+};
+
+const recollection = [
+  'recall',
+  'recollect',
+  'remember',
+  'bring up the memory of'
+];
+
+const selectOrRadioGeneralQuestions = {
   surreal: [
     '[choiceWords] this list of recent dreams or nightmares.',
     '[choiceWords] the option which is least likely to be performed by your [relative].'
@@ -150,7 +184,7 @@ const placeholders = {
   ]
 }
 
-const selectOrRadioAnswers = {
+const selectOrRadioGeneralAnswers = {
   surreal: [
     'Okay',
     'Sure'
@@ -209,10 +243,20 @@ const suchas = [
   'maybe'
 ];
 
+const selectOrRadioYesNoAnswers = [
+  'Yes',
+  'No',
+  '{I beg you|Please|I ask you to} stop',
+  'I cannot continue, but I must continue',
+  'Of course',
+  'I cannot {lie|say|agree}',
+  'Never'
+];
+
 const LibrumOfExperiences = {
   questionTypes,
-  selectOrRadioQuestions,
-  selectOrRadioAnswers,
+  selectOrRadioGeneralQuestions,
+  selectOrRadioGeneralAnswers,
   inputQuestions,
   placeholders,
   animals,
@@ -224,6 +268,9 @@ const LibrumOfExperiences = {
   relatives,
   gloryish,
   formOfGovernment,
-  suchas
+  suchas,
+  selectOrRadioYesNoAnswers,
+  selectOrRadioYesNoQuestions,
+  recollection
 }
 module.exports = { questionTypes, LibrumOfExperiences }
