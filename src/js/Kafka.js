@@ -11,14 +11,27 @@ class Kafka {
     this.unreferenceQuestions = [];
     this.referencedQuestions = [];
     this.referenceThreshold = 100;
+    this.minRadioOptions = 2;
+    this.maxRadioOptions = 5;
+    this.minSelectOptions = 2;
+    this.maxSelectOptions = 10;
     this.ossuary = new Ossuary(LibrumOfExperiences);
-    let numberPerRow = randomIntR({ low: 1, high: 4 });
+    let numberPerRow = Number(this.ossuary.parse('{1|2|4}'));
     let currentRowItem = 0;
-    let $form = $(`<form id="${this.generateFormId()}" action="${this.generateFormAction()}"></form>`);
-    let $row = $('<div class="row"></div>');
+    let $form = $(`
+      <form
+        id="${this.generateFormId()}"
+        action="${this.generateFormAction()}"
+      ></form>
+    `);
+    let $row = $(`
+      <div class="row"></div>
+    `);
     let windowHeight = window.innerHeight;
     let totalHeight = 0;
     $('body').append($form);
+    // Continue to generate elements until the total height of all
+    // elements is greater than the initial window height
     while (totalHeight < windowHeight) {
       const $el = this.getInputElement();
       const ratio = this.getRatio(numberPerRow);
@@ -31,7 +44,9 @@ class Kafka {
         $form.append($row);
         numberPerRow = Number(this.ossuary.parse('{1|2|4}'));
         currentRowItem = 0;
-        $row = $('<div class="row"></div>');
+        $row = $(`
+          <div class="row"></div>
+        `);
       }
       totalHeight = $form.height();
     }
@@ -53,17 +68,16 @@ class Kafka {
 
   getInputElement (options) {
     const type = this.getInputType();
-    console.log(type);
     const questionType = this.ossuary.parse('[questionTypes]');
     switch (type) {
       case 'text':
-        return this.buildInputText(type);
+        return this.buildInputText(questionType);
       case 'number':
-        return this.buildInputNumber(type);
+        return this.buildInputNumber(questionType);
       case 'select':
-        return this.buildInputSelect(type);
+        return this.buildInputSelect(questionType);
       case 'radio':
-        return this.buildInputRadio(type);
+        return this.buildInputRadio(questionType);
       default:
         throw new Error('what');
     }
@@ -86,7 +100,11 @@ class Kafka {
 
   buildInputNumber (type) {
     const question = lowerCase(this.recursiveslyParse('[inputQuestions]'));
-    let $el = $('<div class="columns"><input required type="number"/></div>');
+    let $el = $(`
+      <div class="columns">
+        <input required type="number"/>
+      </div>
+    `);
     $el.prepend(this.getQuestionEl(question));
     return $el;
   }
@@ -95,35 +113,60 @@ class Kafka {
 
     const typeOfQuestion = this.ossuary.parse(`{General|YesNo^2}`);
     const question = lowerCase(this.recursiveslyParse(`[selectOrRadio${typeOfQuestion}Questions]`));
-    let $el = $('<div class="columns"><select required></select></div>');
-    let max = randomIntR({ low: 2, high: 3 });
+    let $el = $(`
+      <div class="columns">
+        <select required></select>
+      </div>
+    `);
+    let max = randomIntR({
+      low: this.minSelectOptions,
+      high: this.maxSelectOptions
+    });
     let answers = this.recursiveslyParse(`[selectOrRadio${typeOfQuestion}Answers.${type}:unique(${max})]`);
-    answers = answers.split(' ');
+    answers = answers.split('%');
     if (this.shouldAddReference()) {
+      // Either append or prepend the referenced question
       $el[this.ossuary.parse('{prepend|append}')](this.getQuestionReference(answers));
     }
     $el.prepend(this.getQuestionEl(question));
     answers.forEach((answer) => {
-      $el.find('select').append($(`<option>${answer}</option>`));
+      $el.find('select').append(
+        $(`
+          <option>${answer}</option>
+        `)
+      );
     });
     return $el;
   }
 
   buildInputRadio (type) {
-    const question = lowerCase(this.recursiveslyParse('[selectOrRadioQuestions]'));
+
+    const typeOfQuestion = this.ossuary.parse(`{General|YesNo^2}`);
+    const question = lowerCase(this.recursiveslyParse(`[selectOrRadio${typeOfQuestion}Questions]`));
     const name = randomInt(0, 100000);
-    let $el = $(`<div class="columns"></div>`);
-    let max = randomIntR({ low: 2, high: 10 });
-    let answers = this.recursiveslyParse(`[selectOrRadioAnswers.${type}:unique(${max})]`);
-    answers = answers.split(' ');
-    answers.forEach((answer, i) => {
-      $el.append($(`
-      <div>
-        <input type="radio" id="${name}-${i}" type="radio" name=${name}/>
-        <label for="${name}-${i}">${answer}</label>
-      </div>
-      `));
+    let $el = $(`
+      <div class="columns"></div>
+    `);
+    let max = randomIntR({
+      low: this.minRadioOptions,
+      high: this.maxRadioOptions
     });
+    let answers = this.recursiveslyParse(`[selectOrRadio${typeOfQuestion}Answers.${type}:unique(${max})]`);
+    answers = answers.split('%');
+    answers.forEach((answer, i) => {
+      $el.append(
+        $(`
+          <div>
+            <input type="radio" id="${name}-${i}" type="radio" name=${name}/>
+            <label
+              style="display: inline"
+              for="${name}-${i}"
+            >${answer}</label>
+          </div>
+        `)
+      );
+    });
+    console.log(question);
     $el.prepend(this.getQuestionEl(question));
     return $el;
   }
@@ -166,7 +209,9 @@ class Kafka {
       this.unreferenceQuestions.slice(index + 1)
     );
     this.referencedQuestions.push(number);
-    const $el = $('<p></p>');
+    const $el = $(`
+      <p></p>
+    `);
     const answer = pluck(answers);
     let text = `If you answer ${answer} for this question, please ${this.ossuary.parse('{skip|immediately answer}')} question ${number}.`;
     $el.text(text);

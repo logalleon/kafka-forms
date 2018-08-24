@@ -5,7 +5,7 @@ var Tokens;
 (function (Tokens) {
     Tokens["A_LOWER"] = "{a}";
     Tokens["A_UPPER"] = "{A}";
-    Tokens["SPACE"] = " ";
+    Tokens["SPACE"] = "%";
 })(Tokens || (Tokens = {}));
 const vowels = ['a', 'e', 'i', 'o', 'u', 'y'];
 class Ossuary {
