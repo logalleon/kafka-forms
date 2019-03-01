@@ -1,8 +1,10 @@
 const { Ossuary } = require('./ossuary');
-const $ = require('jquery');
 const { LibrumOfExperiences } = require('./LibrumOfExperiences');
 const { randomIntR, randomInt, pluck } = require('./Random');
 const { startCase, lowerCase, camelCase } = require('lodash');
+
+const ROW_STYLES = '{normal^4|wrapped|inverse}';
+const NUMBER_PER_ROW = '{1|2}';
 
 class Kafka {
 
@@ -11,46 +13,78 @@ class Kafka {
     this.unreferenceQuestions = [];
     this.referencedQuestions = [];
     this.referenceThreshold = 100;
-    this.minRadioOptions = 2;
+    this.minRadioOptions = 1;
     this.maxRadioOptions = 5;
-    this.minSelectOptions = 2;
-    this.maxSelectOptions = 10;
     this.ossuary = new Ossuary(LibrumOfExperiences);
-    let numberPerRow = Number(this.ossuary.parse('{1|2|4}'));
-    let currentRowItem = 0;
+    this.changeThreshold = 2;
+    this.newRowsGenerated = 0;
+    
     let $form = $(`
       <form
         id="${this.generateFormId()}"
         action="${this.generateFormAction()}"
       ></form>
     `);
-    let $row = $(`
-      <div class="row"></div>
-    `);
+    
     let windowHeight = window.innerHeight;
     let totalHeight = 0;
     $('body').append($form);
     // Continue to generate elements until the total height of all
     // elements is greater than the initial window height
     while (totalHeight < windowHeight) {
+      var $row = this.generateRow();
+      $form.append($row);
+      totalHeight = $form.height();
+    }
+    $form.append(this.generateSubmit());
+    this.questionChanged = this.questionChanged.bind(this);
+    $('input').on('change', this.questionChanged);
+  }
+
+  questionChanged () {
+    const totalWithValues = this.getTotalWithValues();
+    console.log(totalWithValues, Math.floor(totalWithValues / this.changeThreshold), this.newRowsGenerated);
+    if (Math.floor(totalWithValues / this.changeThreshold) > this.newRowsGenerated) {
+      this.newRowsGenerated++;
+      const $submit = $('form input[type="submit"]').detach();
+      $('form').append(this.generateRow()).append(this.generateRow()).append($submit);
+      $('input').on('change', this.questionChanged);
+    }
+  }
+
+  getTotalWithValues() {
+    let radioTotal = 0;
+    $.each($('.radio'), (i, el) => {
+      $.each($(el).find('input[type="radio"]'), (i, el) => {
+        radioTotal += $(el).is(':checked') ? 1 : 0;
+      });
+    });
+    let textTotal = 0;
+    $.each($('input[type="text"]'), (i, el) => {
+      textTotal += $(el).val().trim().length ? 1 : 0;
+    });
+    let numberTotal = 0;
+    $.each($('input[type="number"]'), (i, el) => {
+      numberTotal += $(el).val() ? 1 : 0;
+    });
+    return radioTotal + textTotal + numberTotal;
+  }
+
+  generateRow () {
+    const numberPerRow = Number(this.ossuary.parse(NUMBER_PER_ROW));
+    const rowStyle = this.ossuary.parse(ROW_STYLES);
+    const $row = $(`
+      <div class="row ${rowStyle}"></div>
+    `);
+    for (let i = 0; i < numberPerRow; i++) {
       const $el = this.getInputElement();
       const ratio = this.getRatio(numberPerRow);
       $el.addClass(ratio);
       $row.append($el);
-      currentRowItem++;
       this.totalQuestions++;
       this.unreferenceQuestions.push(this.totalQuestions);
-      if (currentRowItem === numberPerRow) {
-        $form.append($row);
-        numberPerRow = Number(this.ossuary.parse('{1|2|4}'));
-        currentRowItem = 0;
-        $row = $(`
-          <div class="row"></div>
-        `);
-      }
-      totalHeight = $form.height();
     }
-    $form.append(this.generateSubmit());
+    return $row;
   }
 
   getRatio (number) {
@@ -74,8 +108,6 @@ class Kafka {
         return this.buildInputText(questionType);
       case 'number':
         return this.buildInputNumber(questionType);
-      case 'select':
-        return this.buildInputSelect(questionType);
       case 'radio':
         return this.buildInputRadio(questionType);
       default:
@@ -84,13 +116,13 @@ class Kafka {
   }
 
   getInputType () {
-    return this.recursiveslyParse('{text|number|select|radio}');
+    return this.recursiveslyParse('{text|number|radio}');
   }
 
   buildInputText (type) {
     const question = lowerCase(this.recursiveslyParse('[inputQuestions]'));
     let $el = $(`
-      <div class="columns">
+      <div class="columns text">
         <input required type="text" placeholder="${this.recursiveslyParse('[placeholders]')}"/>
       </div>
     `);
@@ -101,41 +133,11 @@ class Kafka {
   buildInputNumber (type) {
     const question = lowerCase(this.recursiveslyParse('[inputQuestions]'));
     let $el = $(`
-      <div class="columns">
+      <div class="columns number">
         <input required type="number"/>
       </div>
     `);
     $el.prepend(this.getQuestionEl(question));
-    return $el;
-  }
-
-  buildInputSelect (type) {
-
-    const typeOfQuestion = this.ossuary.parse(`{General|YesNo^2}`);
-    const question = lowerCase(this.recursiveslyParse(`[selectOrRadio${typeOfQuestion}Questions]`));
-    let $el = $(`
-      <div class="columns">
-        <select required></select>
-      </div>
-    `);
-    let max = randomIntR({
-      low: this.minSelectOptions,
-      high: this.maxSelectOptions
-    });
-    let answers = this.recursiveslyParse(`[selectOrRadio${typeOfQuestion}Answers.${type}:unique(${max})]`);
-    answers = answers.split('%');
-    if (this.shouldAddReference()) {
-      // Either append or prepend the referenced question
-      $el[this.ossuary.parse('{prepend|append}')](this.getQuestionReference(answers));
-    }
-    $el.prepend(this.getQuestionEl(question));
-    answers.forEach((answer) => {
-      $el.find('select').append(
-        $(`
-          <option>${answer}</option>
-        `)
-      );
-    });
     return $el;
   }
 
@@ -145,7 +147,7 @@ class Kafka {
     const question = lowerCase(this.recursiveslyParse(`[selectOrRadio${typeOfQuestion}Questions]`));
     const name = randomInt(0, 100000);
     let $el = $(`
-      <div class="columns"></div>
+      <div class="columns radio"></div>
     `);
     let max = randomIntR({
       low: this.minRadioOptions,
@@ -166,7 +168,6 @@ class Kafka {
         `)
       );
     });
-    console.log(question);
     $el.prepend(this.getQuestionEl(question));
     return $el;
   }

@@ -2,6 +2,10 @@
 @import 'skel';
 @import 'form';
 
+$grey: #999;
+$light-grey: #efefef;
+$dark-grey: #333;
+
 h1,
 h2,
 h3,
@@ -17,4 +21,38 @@ label {
 
 label {
   font-size: 1.5rem;
+}
+
+body {
+  margin: 2rem 5%;
+  padding: 2rem;
+  border: 3px double $grey;
+}
+
+input[type="text"] {
+  width: 90%;
+  max-width: 300px;
+}
+
+input {
+  margin: 1rem;
+}
+
+label {
+  margin: 1rem;
+}
+
+.row {
+  margin: 1rem;
+  &.normal {
+
+  }
+  &.wrapped {
+    border: 1px solid $grey;
+    padding: 2rem;
+  }
+  &.inverse {
+    color: $dark-grey;
+    background: $light-grey;
+  }
 }

@@ -661,4 +661,35 @@ label {
   font-size: 1.5rem;
 }
 
+body {
+  margin: 2rem 5%;
+  padding: 2rem;
+  border: 3px double #999;
+}
+
+input[type=text] {
+  width: 90%;
+  max-width: 300px;
+}
+
+input {
+  margin: 1rem;
+}
+
+label {
+  margin: 1rem;
+}
+
+.row {
+  margin: 1rem;
+}
+.row.wrapped {
+  border: 1px solid #999;
+  padding: 2rem;
+}
+.row.inverse {
+  color: #333;
+  background: #efefef;
+}
+
 /*# sourceMappingURL=main.css.map */
