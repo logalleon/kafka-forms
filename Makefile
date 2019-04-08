@@ -1,8 +1,5 @@
 .PHONY: build, watch;
 
-watch:
-	watch make build
-
 build: index.js main.css
 
 index.js: $(wildcard src/js/*.js)

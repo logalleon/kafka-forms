@@ -17112,9 +17112,8 @@ const { Ossuary } = require('./ossuary');
 const { LibrumOfExperiences } = require('./LibrumOfExperiences');
 const { randomIntR, randomInt, pluck } = require('./Random');
 const { startCase, lowerCase, camelCase } = require('lodash');
+const config = require('./config');
 
-const ROW_STYLES = '{normal^4|wrapped|inverse}';
-const NUMBER_PER_ROW = '{1|2}';
 
 class Kafka {
 
@@ -17123,10 +17122,7 @@ class Kafka {
     this.unreferenceQuestions = [];
     this.referencedQuestions = [];
     this.referenceThreshold = 100;
-    this.minRadioOptions = 1;
-    this.maxRadioOptions = 5;
     this.ossuary = new Ossuary(LibrumOfExperiences);
-    this.changeThreshold = 2;
     this.newRowsGenerated = 0;
     
     let $form = $(`
@@ -17149,12 +17145,14 @@ class Kafka {
     $form.append(this.generateSubmit());
     this.questionChanged = this.questionChanged.bind(this);
     $('input').on('change', this.questionChanged);
+    // Generates a form name
+    this.generateFormName();
+    this.generateFormIntroduction();
   }
 
   questionChanged () {
     const totalWithValues = this.getTotalWithValues();
-    console.log(totalWithValues, Math.floor(totalWithValues / this.changeThreshold), this.newRowsGenerated);
-    if (Math.floor(totalWithValues / this.changeThreshold) > this.newRowsGenerated) {
+    if (Math.floor(totalWithValues / config.CHANGE_THRESHOLD) > this.newRowsGenerated) {
       this.newRowsGenerated++;
       const $submit = $('form input[type="submit"]').detach();
       $('form').append(this.generateRow()).append(this.generateRow()).append($submit);
@@ -17181,8 +17179,8 @@ class Kafka {
   }
 
   generateRow () {
-    const numberPerRow = Number(this.ossuary.parse(NUMBER_PER_ROW));
-    const rowStyle = this.ossuary.parse(ROW_STYLES);
+    const numberPerRow = Number(this.ossuary.parse(config.NUMBER_PER_ROW));
+    const rowStyle = this.ossuary.parse(config.ROW_STYLES);
     const $row = $(`
       <div class="row ${rowStyle}"></div>
     `);
@@ -17216,8 +17214,6 @@ class Kafka {
     switch (type) {
       case 'text':
         return this.buildInputText(questionType);
-      case 'number':
-        return this.buildInputNumber(questionType);
       case 'radio':
         return this.buildInputRadio(questionType);
       default:
@@ -17226,7 +17222,7 @@ class Kafka {
   }
 
   getInputType () {
-    return this.recursiveslyParse('{text|number|radio}');
+    return this.recursiveslyParse('{text|radio^2}');
   }
 
   buildInputText (type) {
@@ -17234,17 +17230,6 @@ class Kafka {
     let $el = $(`
       <div class="columns text">
         <input required type="text" placeholder="${this.recursiveslyParse('[placeholders]')}"/>
-      </div>
-    `);
-    $el.prepend(this.getQuestionEl(question));
-    return $el;
-  }
-
-  buildInputNumber (type) {
-    const question = lowerCase(this.recursiveslyParse('[inputQuestions]'));
-    let $el = $(`
-      <div class="columns number">
-        <input required type="number"/>
       </div>
     `);
     $el.prepend(this.getQuestionEl(question));
@@ -17259,17 +17244,14 @@ class Kafka {
     let $el = $(`
       <div class="columns radio"></div>
     `);
-    let max = randomIntR({
-      low: this.minRadioOptions,
-      high: this.maxRadioOptions
-    });
+    let max = randomInt(config.MIN_RADIO_OPTIONS, config.MAX_RADIO_OPTIONS);
     let answers = this.recursiveslyParse(`[selectOrRadio${typeOfQuestion}Answers.${type}:unique(${max})]`);
     answers = answers.split('%');
     answers.forEach((answer, i) => {
       $el.append(
         $(`
           <div>
-            <input type="radio" id="${name}-${i}" type="radio" name=${name}/>
+            <input type="radio" id="${name}-${i}" type="radio" name="${name}"/>
             <label
               style="display: inline"
               for="${name}-${i}"
@@ -17329,10 +17311,24 @@ class Kafka {
     return $el;
   }
 
+  generateFormName () {
+    const number = randomInt(config.FORM_NAME_MIN, config.FORM_NAME_MAX);
+    const letter = String.fromCharCode(64 + randomInt(0, 26));
+    $('#form-name').text(`${number}-${letter}`);
+  }
+
+  generateFormIntroduction () {
+    $('#introduction').text(this.ossuary.parse(`
+      Please fill out this form to the best of your ability. Do not attempt to {elicit aide|plea for mercy|escape the form},
+      as this will only result in {additional paperwork|more questioning from the judges|time lost to the shifting sands}.
+      {From a certain point onward there is no longer any turning back. That is the point that must be reached.|It is not necessary to accept everything as true. One must only accept it as necessary.|You speak as though you are not guilty but that is how the guilty speak.}
+    `))
+  }
+
 }
 
 module.exports = Kafka;
-},{"./LibrumOfExperiences":3,"./Random":4,"./ossuary":6,"lodash":1}],3:[function(require,module,exports){
+},{"./LibrumOfExperiences":3,"./Random":4,"./config":5,"./ossuary":7,"lodash":1}],3:[function(require,module,exports){
 const questionTypes = [
   'surreal',
   'personal',
@@ -17791,12 +17787,22 @@ const clamp = (value, low, high) => {
 exports.clamp = clamp;
 
 },{}],5:[function(require,module,exports){
+module.exports = {
+  MIN_RADIO_OPTIONS: 1,
+  MAX_RADIO_OPTIONS: 5,
+  CHANGE_THRESHOLD: 2,
+  FORM_NAME_MIN: 50,
+  FORM_NAME_MAX: 15000,
+  ROW_STYLES: '{normal^4|wrapped|inverse}',
+  NUMBER_PER_ROW: '{1|2}',
+}
+},{}],6:[function(require,module,exports){
 const Kafka = require('./Kafka');
 
 window.onload = () => {
   const kafka = new Kafka();
 };
-},{"./Kafka":2}],6:[function(require,module,exports){
+},{"./Kafka":2}],7:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const Random_1 = require("./Random");
@@ -18108,4 +18114,4 @@ class Ossuary {
 }
 exports.Ossuary = Ossuary;
 
-},{"./Random":4}]},{},[5]);
+},{"./Random":4}]},{},[6]);

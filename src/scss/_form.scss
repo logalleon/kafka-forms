@@ -1,4 +1,43 @@
 input,
 select {
-  min-width: 180px;
+  min-width: 400px;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  margin: 1rem;
+  &::placeholder {
+    color: black;
+  }
+}
+
+label {
+  font-size: 1.5rem;
+  margin: 1rem;
+  cursor: pointer;
+}
+
+input[type="text"] {
+  width: 90%;
+}
+
+input[type="radio"] {
+  position: relative;
+  &:before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: -3px;
+    width: 1.1rem;
+    height: 1.1rem;
+    background: white;
+    border: 1px solid black;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+  &:checked {
+    &:before {
+      content: 'x';
+    }
+  }
 }

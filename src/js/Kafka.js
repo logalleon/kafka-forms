@@ -2,9 +2,8 @@ const { Ossuary } = require('./ossuary');
 const { LibrumOfExperiences } = require('./LibrumOfExperiences');
 const { randomIntR, randomInt, pluck } = require('./Random');
 const { startCase, lowerCase, camelCase } = require('lodash');
+const config = require('./config');
 
-const ROW_STYLES = '{normal^4|wrapped|inverse}';
-const NUMBER_PER_ROW = '{1|2}';
 
 class Kafka {
 
@@ -13,10 +12,7 @@ class Kafka {
     this.unreferenceQuestions = [];
     this.referencedQuestions = [];
     this.referenceThreshold = 100;
-    this.minRadioOptions = 1;
-    this.maxRadioOptions = 5;
     this.ossuary = new Ossuary(LibrumOfExperiences);
-    this.changeThreshold = 2;
     this.newRowsGenerated = 0;
     
     let $form = $(`
@@ -39,12 +35,14 @@ class Kafka {
     $form.append(this.generateSubmit());
     this.questionChanged = this.questionChanged.bind(this);
     $('input').on('change', this.questionChanged);
+    // Generates a form name
+    this.generateFormName();
+    this.generateFormIntroduction();
   }
 
   questionChanged () {
     const totalWithValues = this.getTotalWithValues();
-    console.log(totalWithValues, Math.floor(totalWithValues / this.changeThreshold), this.newRowsGenerated);
-    if (Math.floor(totalWithValues / this.changeThreshold) > this.newRowsGenerated) {
+    if (Math.floor(totalWithValues / config.CHANGE_THRESHOLD) > this.newRowsGenerated) {
       this.newRowsGenerated++;
       const $submit = $('form input[type="submit"]').detach();
       $('form').append(this.generateRow()).append(this.generateRow()).append($submit);
@@ -71,8 +69,8 @@ class Kafka {
   }
 
   generateRow () {
-    const numberPerRow = Number(this.ossuary.parse(NUMBER_PER_ROW));
-    const rowStyle = this.ossuary.parse(ROW_STYLES);
+    const numberPerRow = Number(this.ossuary.parse(config.NUMBER_PER_ROW));
+    const rowStyle = this.ossuary.parse(config.ROW_STYLES);
     const $row = $(`
       <div class="row ${rowStyle}"></div>
     `);
@@ -106,8 +104,6 @@ class Kafka {
     switch (type) {
       case 'text':
         return this.buildInputText(questionType);
-      case 'number':
-        return this.buildInputNumber(questionType);
       case 'radio':
         return this.buildInputRadio(questionType);
       default:
@@ -116,7 +112,7 @@ class Kafka {
   }
 
   getInputType () {
-    return this.recursiveslyParse('{text|number|radio}');
+    return this.recursiveslyParse('{text|radio^2}');
   }
 
   buildInputText (type) {
@@ -124,17 +120,6 @@ class Kafka {
     let $el = $(`
       <div class="columns text">
         <input required type="text" placeholder="${this.recursiveslyParse('[placeholders]')}"/>
-      </div>
-    `);
-    $el.prepend(this.getQuestionEl(question));
-    return $el;
-  }
-
-  buildInputNumber (type) {
-    const question = lowerCase(this.recursiveslyParse('[inputQuestions]'));
-    let $el = $(`
-      <div class="columns number">
-        <input required type="number"/>
       </div>
     `);
     $el.prepend(this.getQuestionEl(question));
@@ -149,17 +134,14 @@ class Kafka {
     let $el = $(`
       <div class="columns radio"></div>
     `);
-    let max = randomIntR({
-      low: this.minRadioOptions,
-      high: this.maxRadioOptions
-    });
+    let max = randomInt(config.MIN_RADIO_OPTIONS, config.MAX_RADIO_OPTIONS);
     let answers = this.recursiveslyParse(`[selectOrRadio${typeOfQuestion}Answers.${type}:unique(${max})]`);
     answers = answers.split('%');
     answers.forEach((answer, i) => {
       $el.append(
         $(`
           <div>
-            <input type="radio" id="${name}-${i}" type="radio" name=${name}/>
+            <input type="radio" id="${name}-${i}" type="radio" name="${name}"/>
             <label
               style="display: inline"
               for="${name}-${i}"
@@ -217,6 +199,20 @@ class Kafka {
     let text = `If you answer ${answer} for this question, please ${this.ossuary.parse('{skip|immediately answer}')} question ${number}.`;
     $el.text(text);
     return $el;
+  }
+
+  generateFormName () {
+    const number = randomInt(config.FORM_NAME_MIN, config.FORM_NAME_MAX);
+    const letter = String.fromCharCode(64 + randomInt(0, 26));
+    $('#form-name').text(`${number}-${letter}`);
+  }
+
+  generateFormIntroduction () {
+    $('#introduction').text(this.ossuary.parse(`
+      Please fill out this form to the best of your ability. Do not attempt to {elicit aide|plea for mercy|escape the form},
+      as this will only result in {additional paperwork|more questioning from the judges|time lost to the shifting sands}.
+      {From a certain point onward there is no longer any turning back. That is the point that must be reached.|It is not necessary to accept everything as true. One must only accept it as necessary.|You speak as though you are not guilty but that is how the guilty speak.}
+    `))
   }
 
 }

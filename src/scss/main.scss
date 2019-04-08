@@ -2,9 +2,16 @@
 @import 'skel';
 @import 'form';
 
-$grey: #999;
+@font-face {
+  src: url('./type.ttf');
+  font-family: 'Type';
+}
+
+// $grey: #999;
 $light-grey: #efefef;
-$dark-grey: #333;
+// $dark-grey: #333;
+$grey: black;
+$dark-grey: black;
 
 h1,
 h2,
@@ -16,36 +23,25 @@ input,
 select,
 option,
 label {
-  font-family: 'Cutive Mono';
+  font-family: 'Type';
 }
 
-label {
-  font-size: 1.5rem;
+:root {
+  font-size: 20px;
 }
+
+
 
 body {
   margin: 2rem 5%;
   padding: 2rem;
-  border: 3px double $grey;
-}
-
-input[type="text"] {
-  width: 90%;
-  max-width: 300px;
-}
-
-input {
-  margin: 1rem;
-}
-
-label {
-  margin: 1rem;
+  border: 9px double $grey;
 }
 
 .row {
   margin: 1rem;
   &.normal {
-
+    padding: 5%;
   }
   &.wrapped {
     border: 1px solid $grey;
@@ -55,4 +51,8 @@ label {
     color: $dark-grey;
     background: $light-grey;
   }
+}
+
+.columns {
+  padding: 1rem;
 }
