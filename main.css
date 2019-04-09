@@ -662,6 +662,10 @@ input[type=text] {
   width: 90%;
 }
 
+input[type=submit] {
+  font-size: 1.2rem;
+}
+
 input[type=radio] {
   position: relative;
 }
@@ -700,7 +704,7 @@ label {
 }
 
 :root {
-  font-size: 20px;
+  font-size: 18px;
 }
 
 body {

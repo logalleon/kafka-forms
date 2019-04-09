@@ -1,35 +1,63 @@
 const questionTypes = [
   'surreal',
   'personal',
-  'dark',
-  'polticial',
   'judicial',
   'religious',
 ];
 
 const inputQuestions = {
-  surreal: [
-    'test'
-  ],
   personal: [
-    'test'
+    '[describe] the [animals] most important in your childhood',
+    'chronologue the childhood of your [relatives]',
+    '[describe] the slow fading of youth',
+    'explain all objects of sentimental value in your upbringing',
+    '[describe] how you would get lost in the {dim|overgrown|endless} woods',
+    '[describe] your childhood, or the childhood of past lives',
+    '[request] do not despair',
+    '[request] recall past lives and crimes they have committed',
+    '[describe] all the memories you have ever had'
   ],
   dark: [
-    'test'
-  ],
-  polticial: [
-    'test'
+    '[describe] the sound heard between pockets of time',
+    '[describe] the collapse of future stars',
+    '[request] [describe] how you know',
+    '[describe] the face of that which {shimmers|lurks|hunts} amongst the faltering light',
+    '[describe] nothingness',
+    '[request] do not [describe] the {void|abyss|maw of oblivion}',
+    '[describe] the tools with which to destroy the past',
   ],
   judicial: [
-    'test'
+    '[describe] how you are guilty, for your innocence does not matter',
+    'rewrite the law in a way that is consistent with absolute truth',
+    'list the face of all those you have gazed upon, in chronological order',
+    'name all the judges who put you here',
+    '[describe] the failed bribes you have attempted',
+    '[describe] the [formOfGovernment] in its most abstract sense',
+    '[request] do not stop'
   ],
   religious: [
-    'test'
+    '[request] [describe] how you can never be absolved of your sins',
+    '[describe] all crimes you have committed against god',
+    '[describe] how one can be forgiven for crimes one has not yet committed',
+    '[describe] what you see in the cathedral square at {noon|midnight|the last hours of the day} that no one else seems to notice',
   ]
 };
 
 const selectOrRadioYesNoQuestions = {
-  surreal: [
+  personal: [
+    'Do you think often of the now-vague memory of your [relatives]?',
+    'Can you [recollection] life as a young and carefree youth?',
+    'Can you account for the passage of years?',
+    'Do you agree that you can {hasten|slow|stop} the passage of time?',
+    'Do you feel the [ominousStates] at {dawn|dusk|the darkest hours night}?'
+  ],
+  dark: [
+    'Do you think that the noises will cease?',
+    'Do you agree with the {oozing liquids in the basement|the unending night}?',
+    'Can you see the shadows between the rays of light?',
+    'Can you hear the slow beating of the heart under the rose bush?',
+    'Do you see the blood which pours from the eyes of the statue in the town square?',
+    'Do you think that they will find you?',
     'Have you ever been witness to the collapse of dreams?',
     'Does the faltering of the stars remind you of the future?',
     'Can you recall the horrors of the past in great detail?',
@@ -37,34 +65,29 @@ const selectOrRadioYesNoQuestions = {
     'Has the future now become the past?',
     'Can you transcend it all or shall you be pulled into it?'
   ],
-  personal: [
-    'Do you think often of the now-vague memory of your [relatives]?',
-    'Can you [recollection] life as a young and carefree youth?',
-    'Can you account for the passage of years?',
-    'Do you agree that you can {hasten|slow|stop} the passage of time?'
-  ],
-  dark: [
-    'Do you think that the noises will cease?',
-    'Do you agree with the slow, oozing liquids in the basement?',
-    'Can you see the shadows between the rays of light?',
-    'Can you hear the slow beating of the heart under the rose bush?',
-    'Do you see the blood which pours from the eyes of the statue in the town square?',
-    'Do you think that they will find you?'
-  ],
-  polticial: [
-    'Do you believe that you are innocent?',
-    'Do you believe that there is a will which drives the people?',
-    'Do you agree with your contempories?'
-  ],
   judicial: [
-    'Do you believe you can stand against the law?'
+    'Do you [believe] that you are innocent?',
+    'Do you [believe] that there is a will which drives the people?',
+    'Do you agree with your contempories?',
+    'Do you [believe] you can stand against the law?',
+    'Do you [believe] the law will defeat you?',
+    'Do you [believe] that your displays of grandeur are meaningless?',
+    'Do you [believe] you can run?'
   ],
   religious: [
     'Do you hear the sound of the dead through the walls?',
-    'Do you believe the priests with masks upon their faces?',
-    'Have you see what waits in the bands of the ocean waves?'
+    'Do you [believe] the priests with masks upon their faces?',
+    'Have you see what waits in the bands of the ocean waves?',
+    'When did you start hearing the voices?',
+    'What do you think of the silent watchers of the {cathedral|panopticon|tower of the dark magi}?'
   ]
 };
+
+const believe = [
+  'think',
+  'believe',
+  'truly hold to the idea'
+]
 
 const recollection = [
   'recall',
@@ -73,25 +96,32 @@ const recollection = [
   'bring up the memory of'
 ];
 
+const fruit = [
+  'the stone of a peach',
+  'dried cherries, as red as blood',
+  'apple slices or the memory of them',
+  'soft, broken grapes',
+  'lost pieces of oranges, drying under the {sofa|kitchen sink|dining table}',
+  'rinds of lemons'
+];
+
 const selectOrRadioGeneralQuestions = {
-  surreal: [
-    '[choiceWords] this list of recent dreams or nightmares.',
-    '[choiceWords] the option which is least likely to be resisted by your [relatives].'
-  ],
   personal: [
     '[request] [choiceWords] that which you remember before you were born.',
-    '[request] recall the past, the present, the future, simultaneously'
+    '[request] recall the past, the present, the future, simultaneously',
+    '[request] [choiceWords] a moment of your past, lost fovered',
+    'select that which best describes your {[relatives]|sense of being|sense of loss}',
+    '[request] [choiceWords] that which has come to you in {dreams|nightmares}'
   ],
   dark: [
     'Have you witnessed the death of another human?',
     'How do the screams make you feel?',
     'Who have you seen in the shadows?',
-    'What arises during the slow fade into dusk?'
-  ],
-  polticial: [
-    'How futile is the revolution?',
-    'Where are you hiding the {plans of the revolutionaries|papers on removing the monarchy}?',
-    'Do you feel the presence of the eyes that watch you?'
+    'What arises during the slow fade into dusk?',
+    '[choiceWords] this list of recent dreams or nightmares.',
+    '[choiceWords] the option which is least likely to be resisted by your [relatives].',
+    '[choiceWords] the option which causes madness',
+    '[request] [choiceWords] the option which will remain after all time is lost'
   ],
   judicial: [
     'Have you committed illegal acts against {a} [animals]?',
@@ -99,8 +129,11 @@ const selectOrRadioGeneralQuestions = {
     'Can you speak the names of any of the judges who know your name?',
     'What is the absolute truth of the law?',
     'Have you committed crimes against the [formOfGovernment]?',
-    'Were were you [numbers] years ago on this very day?',
-    'When will you give in?'
+    'Where were you [numbers] years ago on this very day?',
+    'When will you give in?',
+    'How futile is the revolution?',
+    'Where are you hiding the {plans of the revolutionaries|papers on removing the monarchy}?',
+    'Do you feel the presence of the eyes that watch you?'
   ],
   religious: [
     `Does the {complete absence|obvious implausability|shocking silence}
@@ -109,7 +142,8 @@ const selectOrRadioGeneralQuestions = {
     'What follows in the hallowed halls?',
     'Where is the voice of the lost deity coming from?',
     'When will you repent?',
-    'Please explain why you haven\'t been to confession in [numbers] years.'
+    'Please explain why you haven\'t been to confession in [numbers] years.',
+    'your guilt follows you, even in lives you have not lived'
   ],
 }
 
@@ -120,6 +154,10 @@ const request = [
   'Would you',
   'You must now',
   'For the [gloryish] of our [formOfGovernment]'
+];
+
+const describe = [
+  '{Describe|Extoll|Explain|Elucidate|Write} {in frightening detail|at incredible length|with as much description as possible|while leaving nothing out}',
 ]
 
 const choiceWords = [
@@ -216,14 +254,6 @@ const ominousStates = [
 ];
 
 const placeholders = {
-  surreal: [
-    '[suchas] dreams or fears',
-    'ominous silence',
-    'broken childhood dolls',
-    '[fruit] remains',
-    'the slow fading of time',
-    'seeds of [tree|flower]'
-  ],
   personal: [
     'a memory of [relatives]',
     'a childhood bedroom',
@@ -232,62 +262,63 @@ const placeholders = {
   ],
   dark: [
     'the growing, ominous silence',
-    'the gaze of the raven'
-  ],
-  polticial: [
-    'the monarchy',
-    'the silent kings'
+    'the gaze of the raven',
+    '[suchas] dreams or fears',
+    'ominous silence',
+    'broken childhood dolls',
+    '[fruit] remains',
+    'the slow fading of time',
+    'remains of [fruit]'
   ],
   judicial: [
     'the law',
-    'fealty to [formOfGovernment]'
+    'fealty to our [formOfGovernment]',
+    'silence silence silence',
+    'the monarchy',
+    'the silent kings',
   ],
   religious: [
     'the clergy',
     'the masks of white and gold',
-    'the lost gods'
+    'the lost gods',
+    'brittle remnants of cosmic fruition',
+    'penance'
   ]
 }
 
 const selectOrRadioGeneralAnswers = {
-  surreal: [
-    'a brittle arc of lightning cascading across the bleak night',
-    'the tooth of a long-forgotten beast',
-    'a quill made of hawk feathers',
-    'a locket which hums in the dark',
-    'a raw of light which cascades upon the dusty floor',
-    'a remembrance etched upon the branches of a yew',
-    'an ancient, dusty tomb',
-    'a alembic, cracked and useless',
-    'a torrid dream'
-  ],
   personalAnswers: [
-    'the last days of summer',
+    'the last days of [seasons]',
     'a childhood friend',
-    'a doll which speaks softly when no one is looking',
+    'a {doll|wooden block|rock from a field} which speaks softly when no one is looking',
     'scraps of paper',
-    'what remains of your childhood'
+    'what remains of your childhood',
+    'a sense of longing and loss',
+    'a remembrance buried under the floorboards of your childhood home',
+    'a dark seed and a [fruit]',
+    'a fly trapped in a mason jar',
+    'a dry loaf of bread'
   ],
   darkAnswers: [
     'a crushed mote of glass',
     'the brittle bones of time',
     'layers upon layers of flesh',
     '[numbers] years of sorrow',
+    'pulsing remains',
+    'a shivering darkness',
     'a rain-soaked cemetery',
     'a mansion which rests gloomily upon a hill in the distance',
-    'a cry which echoes across a moor'
-  ],
-  polticialAnswers: [
-    'the gate of the Law',
-    'all things good and loyal',
-    'the [formOfGovernment]',
-    'fielty to a faraway emperor',
-    'taxation',
-    'laws regarding libel and slander',
-    'the all-powerful bureaucracy',
-    'the department of departments',
-    'the royalty in its infinite wisdom',
-    'the department of time'
+    'a cry which echoes across a moor',
+    'a brittle arc of lightning cascading across the bleak night',
+    'the tooth of a long-forgotten beast',
+    'a quill made of {hawk|crow|sparrow} feathers',
+    'a locket which hums in the dark',
+    'a {ray|beam|strand} of light which cascades upon the dusty floor',
+    'a remembrance etched upon the branches of a yew',
+    'an ancient, dusty tomb',
+    'a alembic, cracked and useless',
+    'a torrid dream',
+    'a lucid, waking nightmare'
   ],
   judicialAnswers: [
     'the law and power',
@@ -300,25 +331,60 @@ const selectOrRadioGeneralAnswers = {
     'silent orders passed down from higher powers',
     'mouthed words of your sentence',
     'crimes you will commit in the future',
-    'the will of the judiciary and the loss of the right of appeal'
+    'the will of the judiciary and the loss of the right of appeal',
+    'the gate of the Law',
+    `all things [positive] and [loyal]`,
+    'the [formOfGovernment]',
+    '[loyal] to a faraway emperor',
+    'taxation',
+    'laws regarding libel and slander',
+    'the all-powerful bureaucracy',
+    'the department of departments',
+    'the royalty in its infinite wisdom',
+    'the department of time'
   ],
   religiousAnswers: [
     'a golden ray peaking through a crack in the attic',
     'a prayer bead cast upon the kitchen floor',
     'a card with a hymn written in a language lost to time',
     'a locket with the crossed out face of the Virgin Mary',
-    'a timeless whisper from an unseen god'
+    'a timeless whisper from an unseen god',
+    'an echo from the halls of the holiest things',
+    'the nervous light of sunday'
   ]
 }
+
+const positive = [
+  'good',
+  'holy',
+  'blessed',
+  'happy'
+];
+
+const loyal = [
+  'loyalty',
+  'fealty',
+  'strict adherence'
+]
 
 const animals = [
   'horse',
   'goat',
   'llama',
-  'a field mouse',
-  'a hawk upon an {oak|yew|ash} tree',
+  'field mouse',
+  'hawk upon an {oak|yew|ash} tree',
   'cat',
   'dog',
+  'rodents {unending|unyielding}',
+  'horse being struck in the town square',
+  'young and wreckless foals'
+]
+
+const seasons = [
+  'summer',
+  'spring',
+  'autumn',
+  'winter'
 ]
 
 const gloryish = [
@@ -366,11 +432,17 @@ const selectOrRadioYesNoAnswers = [
   'why do you ask this of me?',
   'there is no denying this truth',
   'no, and I cannot say why',
-  'no, even though my arrest will follow for me saying no',
+  'no, even though my {arrest|detention|suspention of rights} will follow for me saying no',
   'nothing can be said of this',
   'I refuse to answer',
   'I will refuse to answer in the future',
   'there is nothing that can be said of this',
+  'why keep on',
+  'I have refused to answer in the past',
+  'words no longer have meaning',
+  'yes yes yes yes',
+  'no no no no',
+  'positively'
 ];
 
 const LibrumOfExperiences = {
@@ -391,6 +463,11 @@ const LibrumOfExperiences = {
   suchas,
   selectOrRadioYesNoAnswers,
   selectOrRadioYesNoQuestions,
-  recollection
+  recollection,
+  positive,
+  loyal,
+  fruit,
+  describe,
+  seasons
 }
 module.exports = { questionTypes, LibrumOfExperiences }

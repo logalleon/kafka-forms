@@ -22,7 +22,7 @@ class Kafka {
       ></form>
     `);
     
-    let windowHeight = window.innerHeight;
+    let windowHeight = config.DEBUG_GENERATE_MANY_QUESTIONS ? 15000 : window.innerHeight;
     let totalHeight = 0;
     $('body').append($form);
     // Continue to generate elements until the total height of all
@@ -116,7 +116,7 @@ class Kafka {
   }
 
   buildInputText (type) {
-    const question = lowerCase(this.recursiveslyParse('[inputQuestions]'));
+    let question = lowerCase(this.recursiveslyParse('[inputQuestions]'));
     let $el = $(`
       <div class="columns text">
         <input required type="text" placeholder="${this.recursiveslyParse('[placeholders]')}"/>
@@ -129,7 +129,12 @@ class Kafka {
   buildInputRadio (type) {
 
     const typeOfQuestion = this.ossuary.parse(`{General|YesNo^2}`);
-    const question = lowerCase(this.recursiveslyParse(`[selectOrRadio${typeOfQuestion}Questions]`));
+    let question = lowerCase(this.recursiveslyParse(`[selectOrRadio${typeOfQuestion}Questions]`));
+    if (typeOfQuestion === 'General') {
+      if (question.indexOf('?') === -1) {
+        question += '?'
+      }
+    }
     const name = randomInt(0, 100000);
     let $el = $(`
       <div class="columns radio"></div>
