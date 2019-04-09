@@ -468,6 +468,7 @@ const LibrumOfExperiences = {
   loyal,
   fruit,
   describe,
-  seasons
+  seasons,
+  believe
 }
 module.exports = { questionTypes, LibrumOfExperiences }
