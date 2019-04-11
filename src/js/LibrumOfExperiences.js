@@ -297,7 +297,8 @@ const selectOrRadioGeneralAnswers = {
     'a remembrance buried under the floorboards of your childhood home',
     'a dark seed and a [fruit]',
     'a fly trapped in a mason jar',
-    'a dry loaf of bread'
+    'a dry loaf of bread',
+    'the memory of [toy]'
   ],
   darkAnswers: [
     'a crushed mote of glass',
@@ -318,7 +319,8 @@ const selectOrRadioGeneralAnswers = {
     'an ancient, dusty tomb',
     'a alembic, cracked and useless',
     'a torrid dream',
-    'a lucid, waking nightmare'
+    'a lucid, waking nightmare',
+    'a filthy child stealing [toy]'
   ],
   judicialAnswers: [
     'the law and power',
@@ -377,7 +379,22 @@ const animals = [
   'dog',
   'rodents {unending|unyielding}',
   'horse being struck in the town square',
-  'young and wreckless foals'
+  'young and wreckless foals',
+  'crows gorged on flesh',
+  'hound staring vacantly',
+  'swarm of flies',
+  'feral child'
+]
+
+
+const toy = [
+  'a wooden locomotive with no wheels',
+  'a nutcracker wearing an expression of {malice|melancholy|distress}',
+  'a porcelain doll that has witnessed death',
+  'a mechanical doll whose crying never ends',
+  'a race car carrying the patina of dreams that will never be fulfilled',
+  'a tangled yo-yo',
+  'a slinky lacking the will to go on'
 ]
 
 const seasons = [
@@ -390,7 +407,7 @@ const seasons = [
 const gloryish = [
   'glory',
   'supremacy',
-  'supiority',
+  'superiority',
   'continued success',
   'eternal salvation',
   '{glorious|inevitable|predestined} victory',
@@ -432,7 +449,7 @@ const selectOrRadioYesNoAnswers = [
   'why do you ask this of me?',
   'there is no denying this truth',
   'no, and I cannot say why',
-  'no, even though my {arrest|detention|suspention of rights} will follow for me saying no',
+  'no, even though my {arrest|detention|suspension of rights} will follow for me saying no',
   'nothing can be said of this',
   'I refuse to answer',
   'I will refuse to answer in the future',
@@ -442,7 +459,10 @@ const selectOrRadioYesNoAnswers = [
   'words no longer have meaning',
   'yes yes yes yes',
   'no no no no',
-  'positively'
+  'positively',
+  'a definitive reply {terrifies|angers} me',
+  'the {silence|infinite abyss|darkness} drowns my response',
+  'I will {agree|disagree}, although it makes no difference'
 ];
 
 const LibrumOfExperiences = {
@@ -469,6 +489,7 @@ const LibrumOfExperiences = {
   fruit,
   describe,
   seasons,
-  believe
+  believe,
+  toy
 }
 module.exports = { questionTypes, LibrumOfExperiences }
