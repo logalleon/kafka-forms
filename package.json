@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "develop": "browser-sync start -s --files ./",
+    "start": "npm run develop",
     "build": "watch make"
   },
   "repository": {
