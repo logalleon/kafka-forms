@@ -17108,6 +17108,25 @@
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],2:[function(require,module,exports){
+function update(element, multiplier) {
+  const scale = multiplier / 40;
+  const baseFrequency = 100 / multiplier;
+  element.innerHTML = `<svg><filter id="noise" x="0%" y="0%" width="100%" height="100%"><feTurbulence baseFrequency="${baseFrequency + ' ' + baseFrequency}" result="NOISE" numOctaves="1" /><feDisplacementMap in="SourceGraphic" in2="NOISE" scale="${scale}" xChannelSelector="R" yChannelSelector="R"></feDisplacementMap></filter></svg>`;
+}
+
+function Acid() {
+  console.log('Acid');
+  var acid = document.createElement('div');
+  document.body.appendChild(acid);
+  window.addEventListener('scroll', () => {
+    console.log('scroll');
+    update(acid, window.scrollY/100);
+  });
+}
+
+
+module.exports = Acid;
+},{}],3:[function(require,module,exports){
 const { Ossuary } = require('./ossuary');
 const { LibrumOfExperiences } = require('./LibrumOfExperiences');
 const { randomIntR, randomInt, pluck } = require('./Random');
@@ -17333,7 +17352,7 @@ class Kafka {
 }
 
 module.exports = Kafka;
-},{"./LibrumOfExperiences":3,"./Random":4,"./config":5,"./ossuary":7,"lodash":1}],3:[function(require,module,exports){
+},{"./LibrumOfExperiences":4,"./Random":5,"./config":6,"./ossuary":8,"lodash":1}],4:[function(require,module,exports){
 const questionTypes = [
   'surreal',
   'personal',
@@ -17633,7 +17652,8 @@ const selectOrRadioGeneralAnswers = {
     'a remembrance buried under the floorboards of your childhood home',
     'a dark seed and a [fruit]',
     'a fly trapped in a mason jar',
-    'a dry loaf of bread'
+    'a dry loaf of bread',
+    'the memory of [toy]'
   ],
   darkAnswers: [
     'a crushed mote of glass',
@@ -17654,7 +17674,8 @@ const selectOrRadioGeneralAnswers = {
     'an ancient, dusty tomb',
     'a alembic, cracked and useless',
     'a torrid dream',
-    'a lucid, waking nightmare'
+    'a lucid, waking nightmare',
+    'a filthy child stealing [toy]'
   ],
   judicialAnswers: [
     'the law and power',
@@ -17713,7 +17734,22 @@ const animals = [
   'dog',
   'rodents {unending|unyielding}',
   'horse being struck in the town square',
-  'young and wreckless foals'
+  'young and wreckless foals',
+  'crows gorged on flesh',
+  'hound staring vacantly',
+  'swarm of flies',
+  'feral child'
+]
+
+
+const toy = [
+  'a wooden locomotive with no wheels',
+  'a nutcracker wearing an expression of {malice|melancholy|distress}',
+  'a porcelain doll that has witnessed death',
+  'a mechanical doll whose crying never ends',
+  'a race car carrying the patina of dreams that will never be fulfilled',
+  'a tangled yo-yo',
+  'a slinky lacking the will to go on'
 ]
 
 const seasons = [
@@ -17726,7 +17762,7 @@ const seasons = [
 const gloryish = [
   'glory',
   'supremacy',
-  'supiority',
+  'superiority',
   'continued success',
   'eternal salvation',
   '{glorious|inevitable|predestined} victory',
@@ -17768,7 +17804,7 @@ const selectOrRadioYesNoAnswers = [
   'why do you ask this of me?',
   'there is no denying this truth',
   'no, and I cannot say why',
-  'no, even though my {arrest|detention|suspention of rights} will follow for me saying no',
+  'no, even though my {arrest|detention|suspension of rights} will follow for me saying no',
   'nothing can be said of this',
   'I refuse to answer',
   'I will refuse to answer in the future',
@@ -17778,7 +17814,10 @@ const selectOrRadioYesNoAnswers = [
   'words no longer have meaning',
   'yes yes yes yes',
   'no no no no',
-  'positively'
+  'positively',
+  'a definitive reply {terrifies|angers} me',
+  'the {silence|infinite abyss|darkness} drowns my response',
+  'I will {agree|disagree}, although it makes no difference'
 ];
 
 const LibrumOfExperiences = {
@@ -17805,10 +17844,11 @@ const LibrumOfExperiences = {
   fruit,
   describe,
   seasons,
-  believe
+  believe,
+  toy
 }
 module.exports = { questionTypes, LibrumOfExperiences }
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const pluck = (arr) => {
@@ -17869,7 +17909,7 @@ const clamp = (value, low, high) => {
 };
 exports.clamp = clamp;
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 module.exports = {
   MIN_RADIO_OPTIONS: 1,
   MAX_RADIO_OPTIONS: 5,
@@ -17880,13 +17920,16 @@ module.exports = {
   NUMBER_PER_ROW: '{1|2}',
   DEBUG_GENERATE_MANY_QUESTIONS: false
 }
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 const Kafka = require('./Kafka');
+const Acid = require('./Acid');
 
 window.onload = () => {
   const kafka = new Kafka();
+  console.log(Acid);
+  Acid();
 };
-},{"./Kafka":2}],7:[function(require,module,exports){
+},{"./Acid":2,"./Kafka":3}],8:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const Random_1 = require("./Random");
@@ -18198,4 +18241,4 @@ class Ossuary {
 }
 exports.Ossuary = Ossuary;
 
-},{"./Random":4}]},{},[6]);
+},{"./Random":5}]},{},[7]);
