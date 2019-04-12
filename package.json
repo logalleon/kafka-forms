@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "develop": "browser-sync start -s --files ./",
+    "start": "npm run develop",
     "build": "watch make"
   },
   "repository": {
@@ -21,5 +22,11 @@
   "dependencies": {
     "jquery": "^3.3.1",
     "lodash": "^4.17.10"
+  },
+  "devDependencies": {
+    "browser-sync": "^2.26.3",
+    "browserify": "^16.2.3",
+    "node-sass": "^4.11.0",
+    "watch-cli": "^0.2.3"
   }
 }
